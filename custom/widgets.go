@@ -26,7 +26,7 @@ type ClipboardItem struct {
 
 func (item *ClipboardItem) CreateRenderer() fyne.WidgetRenderer {
 	bg := canvas.NewRectangle(theme.Color(theme.ColorNamePrimary))
-	bg.SetMinSize(fyne.NewSquareSize(100))
+	bg.SetMinSize(fyne.NewSize(300, 100))
 	bg.CornerRadius = theme.Size(theme.SizeNameCardRadius)
 
 	card := container.NewPadded(bg)
@@ -45,7 +45,6 @@ func (item *ClipboardItem) CreateRenderer() fyne.WidgetRenderer {
 			bg.FillColor = colornames.Blueviolet
 		}),
 	))
-
 	card.Add(cardView)
 
 	return widget.NewSimpleRenderer(card)

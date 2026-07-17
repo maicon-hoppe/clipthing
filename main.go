@@ -5,6 +5,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
 	"golang.design/x/clipboard"
 
 	"github.com/maicon-hoppe/clipthing/custom"
@@ -22,9 +23,32 @@ func main() {
 	}
 
 	w := myApp.NewWindow("Teste")
-	w.Resize(fyne.NewSize(200, 300))
+	w.Resize(fyne.NewSize(1000, 600))
 
 	clipboardText := string(clipboard.Read(clipboard.FmtText))
-	w.SetContent(custom.NewClipboardItemWidget(clipboardText, custom.TextDisplay))
+	clipboardItems := container.New(&custom.VFlex{}, custom.NewClipboardItemWidget(clipboardText, custom.TextDisplay))
+
+	// ch := clipboard.Watch(context.Background())
+	/*go func() {
+		for item := range ch {
+			switch item.Format {
+			case clipboard.FmtText:
+				fyne.Do(func() {
+					clipboardItem := custom.NewClipboardItemWidget(string(item.Bytes), custom.TextDisplay)
+					clipboardItems.Add(clipboardItem)
+				})
+			case clipboard.FmtImage:
+				fyne.Do(func() {
+					imageItem := custom.NewClipboardItemWidget("Image", custom.TextDisplay)
+					clipboardItems.Add(imageItem)
+				})
+			}
+		}
+	}() */
+
+	clipboardItems.Add(custom.NewClipboardItemWidget("outra nota", custom.TextDisplay))
+	clipboardItems.Add(custom.NewClipboardItemWidget("{308 108}", custom.TextDisplay))
+
+	w.SetContent(clipboardItems)
 	w.ShowAndRun()
 }
