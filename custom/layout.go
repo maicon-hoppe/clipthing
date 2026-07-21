@@ -7,18 +7,43 @@ import (
 	"fyne.io/fyne/v2"
 )
 
-type VFlex struct{}
+type VFlex struct {
+	ContainerSize fyne.Size
+}
 
 func (l *VFlex) MinSize(objects []fyne.CanvasObject) fyne.Size {
-	totalHeight := float32(0)
+	if len(objects) == 0 {
+		return fyne.NewSize(0, 0)
+	}
+
+	minimumHeights := make([]float32, len(objects))
 	minimumWidths := make([]float32, len(objects))
 	for _, obj := range objects {
-		totalHeight += obj.MinSize().Height
+		minimumHeights = append(minimumHeights, obj.MinSize().Height)
 		minimumWidths = append(minimumWidths, obj.MinSize().Width)
 	}
+	maxSmallHeight := slices.Max(minimumHeights)
 	maxSmallWidth := slices.Max(minimumWidths)
 
-	return fyne.NewSize(maxSmallWidth, totalHeight)
+	minimumHeight := maxSmallHeight
+	maxSmallHeightIndex := slices.IndexFunc(objects,
+		func(obj fyne.CanvasObject) bool {
+			return obj.MinSize().Height == maxSmallHeight
+		},
+	)
+	squareProportion := math.Sqrt(float64(len(objects)))
+	if squareProportion > 1 {
+		step := int(math.Ceil(squareProportion))
+		for i := maxSmallHeightIndex - step; i >= 0; i -= step {
+			minimumHeight += objects[i].MinSize().Height
+		}
+
+		for i := maxSmallHeightIndex + step; i <= (len(objects) - 1); i += step {
+			minimumHeight += objects[i].MinSize().Height
+		}
+	}
+
+	return fyne.NewSize(maxSmallWidth, minimumHeight)
 }
 
 func (l *VFlex) Layout(objects []fyne.CanvasObject, containerSize fyne.Size) {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"fyne.io/fyne/v2"
@@ -23,32 +24,36 @@ func main() {
 	}
 
 	w := myApp.NewWindow("Teste")
-	w.Resize(fyne.NewSize(1000, 600))
+	windowSize := fyne.NewSize(1000, 600)
+	w.Resize(windowSize)
 
 	clipboardText := string(clipboard.Read(clipboard.FmtText))
-	clipboardItems := container.New(&custom.VFlex{}, custom.NewClipboardItemWidget(clipboardText, custom.TextDisplay))
+	clipboardItems := container.New(
+		&custom.VFlex{ContainerSize: windowSize},
+		custom.NewClipboardItemWidget(clipboardText, custom.TextDisplay),
+	)
+	scrollableContainer := container.NewVScroll(clipboardItems)
 
-	// ch := clipboard.Watch(context.Background())
-	/*go func() {
+	ch := clipboard.Watch(context.Background())
+	go func() {
 		for item := range ch {
 			switch item.Format {
 			case clipboard.FmtText:
 				fyne.Do(func() {
 					clipboardItem := custom.NewClipboardItemWidget(string(item.Bytes), custom.TextDisplay)
 					clipboardItems.Add(clipboardItem)
+					clipboardItems.Refresh()
 				})
 			case clipboard.FmtImage:
 				fyne.Do(func() {
 					imageItem := custom.NewClipboardItemWidget("Image", custom.TextDisplay)
 					clipboardItems.Add(imageItem)
+					clipboardItems.Refresh()
 				})
 			}
 		}
-	}() */
+	}()
 
-	clipboardItems.Add(custom.NewClipboardItemWidget("outra nota", custom.TextDisplay))
-	clipboardItems.Add(custom.NewClipboardItemWidget("{308 108}", custom.TextDisplay))
-
-	w.SetContent(clipboardItems)
+	w.SetContent(scrollableContainer)
 	w.ShowAndRun()
 }

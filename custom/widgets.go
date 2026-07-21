@@ -39,6 +39,13 @@ func (item *ClipboardItem) CreateRenderer() fyne.WidgetRenderer {
 		cardView.Add(layout.NewSpacer())
 	}
 
+	if item.mode == ImageDisplay {
+		content := widget.NewLabel("Imagem")
+		content.Wrapping = fyne.TextWrapWord
+		cardView.Add(content)
+		cardView.Add(layout.NewSpacer())
+	}
+
 	cardView.Add(widget.NewToolbar(
 		widget.NewToolbarSpacer(),
 		widget.NewToolbarAction(theme.ContentCopyIcon(), func() {
