@@ -2,7 +2,12 @@ package main
 
 import (
 	"context"
+	"bytes"
 	"fmt"
+	"image"
+	_ "image/png"
+	_ "image/gif"
+	_ "image/jpeg"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -27,7 +32,7 @@ func main() {
 	windowSize := fyne.NewSize(1000, 600)
 	w.Resize(windowSize)
 
-	clipboardText := string(clipboard.Read(clipboard.FmtText))
+	clipboardText := clipboard.Read(clipboard.FmtText)
 	clipboardItems := container.New(
 		&custom.VFlex{ContainerSize: windowSize},
 		custom.NewClipboardItemWidget(clipboardText, custom.TextDisplay),
@@ -40,19 +45,22 @@ func main() {
 			switch item.Format {
 			case clipboard.FmtText:
 				fyne.Do(func() {
-					clipboardItem := custom.NewClipboardItemWidget(string(item.Bytes), custom.TextDisplay)
+					clipboardItem := custom.NewClipboardItemWidget(item.Bytes, custom.TextDisplay)
 					clipboardItems.Add(clipboardItem)
 					clipboardItems.Refresh()
 				})
 			case clipboard.FmtImage:
-				fyne.Do(func() {
-					imageItem := custom.NewClipboardItemWidget("Image", custom.TextDisplay)
-					clipboardItems.Add(imageItem)
-					clipboardItems.Refresh()
-				})
+				_, _, err := image.Decode(bytes.NewReader(item.Bytes))
+				if err == nil {
+					fyne.Do(func() {
+						imageItem := custom.NewClipboardItemWidget(item.Bytes, custom.ImageDisplay)
+						clipboardItems.Add(imageItem)
+						clipboardItems.Refresh()
+					})
+				}
 			}
 		}
-	}()
+	}() 
 
 	w.SetContent(scrollableContainer)
 	w.ShowAndRun()

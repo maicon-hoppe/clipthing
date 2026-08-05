@@ -1,6 +1,7 @@
 package custom
 
 import (
+	"golang.design/x/clipboard"
 	"golang.org/x/image/colornames"
 
 	"fyne.io/fyne/v2"
@@ -20,7 +21,7 @@ const (
 
 type ClipboardItem struct {
 	widget.BaseWidget
-	content string
+	content []byte
 	mode    DisplayMode
 }
 
@@ -33,22 +34,33 @@ func (item *ClipboardItem) CreateRenderer() fyne.WidgetRenderer {
 	cardView := container.NewVBox()
 
 	if item.mode == TextDisplay {
-		content := widget.NewLabel(item.content)
+		content := widget.NewLabel(string(item.content))
 		content.Wrapping = fyne.TextWrapWord
 		cardView.Add(content)
 		cardView.Add(layout.NewSpacer())
 	}
 
 	if item.mode == ImageDisplay {
-		content := widget.NewLabel("Imagem")
-		content.Wrapping = fyne.TextWrapWord
+		imageResource := fyne.NewStaticResource("clipboard_image", item.content)
+		content := canvas.NewImageFromResource(imageResource)
+		content.SetMinSize(fyne.NewSquareSize(300))
+		content.FillMode = canvas.ImageFillContain
 		cardView.Add(content)
+
 		cardView.Add(layout.NewSpacer())
 	}
 
 	cardView.Add(widget.NewToolbar(
 		widget.NewToolbarSpacer(),
 		widget.NewToolbarAction(theme.ContentCopyIcon(), func() {
+			var itemFormat clipboard.Format
+			switch item.mode {
+			case TextDisplay:
+				itemFormat = clipboard.FmtText
+			case ImageDisplay:
+				itemFormat = clipboard.FmtImage
+			}
+			clipboard.Write(itemFormat, item.content)
 			bg.FillColor = colornames.Blueviolet
 		}),
 	))
@@ -57,7 +69,7 @@ func (item *ClipboardItem) CreateRenderer() fyne.WidgetRenderer {
 	return widget.NewSimpleRenderer(card)
 }
 
-func NewClipboardItemWidget(content string, mode DisplayMode) *ClipboardItem {
+func NewClipboardItemWidget(content []byte, mode DisplayMode) *ClipboardItem {
 	clipItem := &ClipboardItem{
 		content: content,
 		mode:    mode,
