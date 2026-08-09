@@ -1,2 +1,15 @@
+[Details]
+Icon = "clipboard.png"
+Name = "Clipthing"
+ID = "com.clipthing"
+Version = "1.0.0"
+Build = 7
+
+[LinuxAndBSD]
+GenericName = "Clipboard Manager"
+Categories = ["Accessories"]
+Comment = "view clipboard history"
+Keywords = ["clipboard", "manager"]
+
 [Migrations]
 fyneDo = true

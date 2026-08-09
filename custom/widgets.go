@@ -2,7 +2,6 @@ package custom
 
 import (
 	"golang.design/x/clipboard"
-	"golang.org/x/image/colornames"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -33,14 +32,13 @@ func (item *ClipboardItem) CreateRenderer() fyne.WidgetRenderer {
 	card := container.NewPadded(bg)
 	cardView := container.NewVBox()
 
-	if item.mode == TextDisplay {
+	switch item.mode {
+	case TextDisplay:
 		content := widget.NewLabel(string(item.content))
 		content.Wrapping = fyne.TextWrapWord
 		cardView.Add(content)
 		cardView.Add(layout.NewSpacer())
-	}
-
-	if item.mode == ImageDisplay {
+	case ImageDisplay:
 		imageResource := fyne.NewStaticResource("clipboard_image", item.content)
 		content := canvas.NewImageFromResource(imageResource)
 		content.SetMinSize(fyne.NewSquareSize(300))
@@ -61,7 +59,6 @@ func (item *ClipboardItem) CreateRenderer() fyne.WidgetRenderer {
 				itemFormat = clipboard.FmtImage
 			}
 			clipboard.Write(itemFormat, item.content)
-			bg.FillColor = colornames.Blueviolet
 		}),
 	))
 	card.Add(cardView)

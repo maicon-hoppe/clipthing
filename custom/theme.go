@@ -7,6 +7,17 @@ import (
 	"fyne.io/fyne/v2/theme"
 )
 
+var (
+	PrimaryColor    = color.RGBA{241, 81, 86, 255} 	// #f15156
+	SecondaryColor  = color.RGBA{107, 15, 26, 255}	// #6b0f1a
+	BackgroundColor = color.RGBA{49, 8, 31, 255}	// #31081f
+
+	DisabledPrimaryColor   = color.RGBA{165, 156, 156, 255}
+	DisabledSecondaryColor = color.RGBA{64, 58, 59, 255}
+
+	TextColor = color.RGBA{204, 204, 204, 255}
+)
+
 type CustomTheme struct{}
 
 func (t *CustomTheme) Color(
@@ -15,36 +26,25 @@ func (t *CustomTheme) Color(
 ) color.Color {
 	themeColor := theme.DefaultTheme().Color(colorName, colorVariant)
 
-	primaryColor := color.RGBA{241, 81, 86, 255}
-	secundaryColor := color.RGBA{107, 15, 26, 255}
-	backgroundColor := color.RGBA{49, 8, 31, 255}
-
-	disabledPrimaryColor := color.RGBA{165, 156, 156, 255}
-	disabledSecundaryColor := color.RGBA{64, 58, 59, 255}
-
 	/* switch colorVariant {
 	case theme.VariantDark: */
 	switch colorName {
 	case theme.ColorNamePrimary:
-		themeColor = primaryColor
+		themeColor = PrimaryColor
 	case theme.ColorNameForeground:
-		themeColor = secundaryColor
+		themeColor = SecondaryColor
 	case theme.ColorNameBackground:
-		themeColor = backgroundColor
+		themeColor = BackgroundColor
 	case theme.ColorNameDisabled:
-		themeColor = disabledSecundaryColor
+		themeColor = DisabledSecondaryColor
 	case theme.ColorNameButton:
-		themeColor = primaryColor
+		themeColor = PrimaryColor
 	case theme.ColorNameDisabledButton:
-		themeColor = disabledPrimaryColor
+		themeColor = DisabledPrimaryColor
 	case theme.ColorNameError:
-		themeColor = secundaryColor
+		themeColor = SecondaryColor
 
 	}
-
-	// #f15156
-	// #6b0f1a
-	// #31081f
 
 	/* case theme.VariantLight:
 		switch colorName {
