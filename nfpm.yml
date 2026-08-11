@@ -1,0 +1,19 @@
+name: "Clipthing"
+arch: "amd64"
+platform: "linux"
+version: "1.0.0"
+section: "accessories"
+priority: "optional"
+maintainer: "Maicon"
+description: "view clipboard history"
+vendor: "MaikTech"
+license: "CC0-1.0"
+
+# Maps extracted files to the final destination on the user's Linux system
+contents:
+  - src: "clipthing/usr/local/bin/clipthing"
+    dst: "/usr/bin/clipthing"
+  - src: "clipthing/usr/local/share/applications/com.clipthing.desktop"
+    dst: "/usr/share/applications/com.clipthing.desktop"
+  - src: "clipthing/usr/local/share/pixmaps/com.clipthing.png"
+    dst: "/usr/share/pixmaps/com.clipthing.png"
